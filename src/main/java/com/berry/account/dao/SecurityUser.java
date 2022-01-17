@@ -1,7 +1,6 @@
 package com.berry.account.dao;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,23 +9,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @AllArgsConstructor
-public class User implements UserDetails, Serializable {
+public class SecurityUser implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
     private String email;
     private String tel;
-    private String name;
-    private String nickname;
     private String password;
-    private Timestamp signUpAt;
-    private Timestamp latestUpdateAt;
 
     private boolean locked;
     private Collection<GrantedAuthority> authorities;
-
-
 
     /**
      * security에서 사용되는 username
