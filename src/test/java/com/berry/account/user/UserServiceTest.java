@@ -3,7 +3,6 @@ package com.berry.account.user;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SecurityUserServiceTest {
+class UserServiceTest {
 
     @InjectMocks
     UserServiceImpl userService;
@@ -48,10 +47,11 @@ class SecurityUserServiceTest {
         given(userService.create(inputUser)).willReturn(user);
 
         // when
-        userRepository.save(inputUser);
+        User returnUser = userRepository.save(inputUser);
 
         // then
         verify(userRepository).save(inputUser);
+        System.out.println(returnUser);
     }
 
     @Test

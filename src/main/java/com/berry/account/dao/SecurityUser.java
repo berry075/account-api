@@ -46,7 +46,7 @@ public class SecurityUser implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        return !locked;
+        return locked;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.berry.account.mock;
 
-import com.berry.account.dao.User;
+import com.berry.account.dao.SecurityUser;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +25,8 @@ public class MockCustomUserSecurityContextFactory implements
             authorities.add(new SimpleGrantedAuthority(auth));
         }
 
-        User user = new User(0L, customUser.email(), customUser.tel(), null, null, null, null, null, false, authorities);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, "password", user.getAuthorities());
+        SecurityUser securityUser = new SecurityUser(0L, customUser.email(), customUser.tel(), null, false, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(securityUser, "password", securityUser.getAuthorities());
 
         context.setAuthentication(authentication);
 
