@@ -1,5 +1,7 @@
 package com.berry.account.user;
 
+import com.berry.account.util.SignIdValidator;
+import com.berry.account.util.SignIdValidator.SignIdType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +18,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User find(String id) {
-        if (id.matches("0[0-9]*")) {
-            return userRepository.findByTel(id).orElseThrow();
+        SignIdType signIdType = SignIdValidator.getType(id);
+        switch (signIdType) {
+            case TEL:
+                return userRepository.findByTel(id).orElseThrow();
+            case EMAIL:
+                return userRepository.findByEmail(id).orElseThrow();
+            default:
+                return userRepository.findById(Long.parseLong(id)).orElseThrow();
         }
-
-        if (id.matches(".*\\@.*\\..*")) {
-            return userRepository.findByEmail(id).orElseThrow();
-        }
-
-        return userRepository.findById(Long.parseLong(id)).orElseThrow();
     }
 
     @Override
