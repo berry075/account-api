@@ -3,6 +3,7 @@ package com.berry.account.user;
 import com.berry.account.util.SignIdValidator;
 import com.berry.account.util.SignIdValidator.SignIdType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,9 +11,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User create(User user) {
+        String encodePassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodePassword);
         return userRepository.save(user);
     }
 
@@ -30,7 +34,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int modifyPasswordById(String id, String password, String newPassword) {
-        return userRepository.modifyPassword(Long.parseLong(id), password, newPassword);
+    public void modifyPasswordById(String id, String password, String newPassword) {
+        Long userId = Long.parseLong(id);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("not found user"));
+        String storedPassword = user.getPassword();
+        if (passwordEncoder.matches(password, storedPassword)) {
+            userRepository.modifyPassword(userId ,storedPassword, passwordEncoder.encode(newPassword));
+        }
     }
 }

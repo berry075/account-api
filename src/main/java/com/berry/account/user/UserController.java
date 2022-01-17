@@ -1,5 +1,6 @@
 package com.berry.account.user;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,9 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/password_reset")
-    public int modifyPassword(@PathVariable String id, String password, String newPassword) {
-        return userService.modifyPasswordById(id, password, newPassword);
+    public void modifyPassword(@PathVariable String id,@RequestBody Map<String, String> params) {
+        String password = params.get("password");
+        String newPassword = params.get("newPassword");
+        userService.modifyPasswordById(id, password, newPassword);
     }
 }

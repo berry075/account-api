@@ -2,10 +2,10 @@ package com.berry.account.sign;
 
 import com.berry.account.user.User;
 import com.berry.account.user.UserRepository;
-import com.berry.account.user.UserService;
 import com.berry.account.util.SignIdValidator;
 import com.berry.account.util.SignIdValidator.SignIdType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class SignInOutServiceImpl implements SignInOutService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User signInBySignId(String signId, String password) {
@@ -30,8 +31,7 @@ public class SignInOutServiceImpl implements SignInOutService {
         }
 
         /* TODO: 비밀번호 비교하기 */
-
-        if (user == null) {
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("not found user");
         }
 
