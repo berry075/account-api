@@ -1,0 +1,2 @@
+INSERT INTO user (id, email, nickname, password, name, tel) VALUES (1, "dodo001@test.mail.com", "dodo001", "pwd1234", "도로시", "01012341234")
+INSERT INTO user (id, email, nickname, password, name, tel) VALUES (2, "oz78@test.mail.com", "오즈의마법사", "abc1234", "오즈", "01056785678")
