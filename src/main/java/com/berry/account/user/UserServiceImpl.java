@@ -4,6 +4,8 @@ import com.berry.account.exception.ErrorCode;
 import com.berry.account.exception.ErrorCodeException;
 import com.berry.account.util.SignIdValidator;
 import com.berry.account.util.SignIdValidator.SignIdType;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,24 +26,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User find(String id) {
+        try {
+            id = URLDecoder.decode(id, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new ErrorCodeException(ErrorCode.REQUEST_INVALID_VALUE);
+        }
         SignIdType signIdType = SignIdValidator.getType(id);
         switch (signIdType) {
             case TEL:
-                return userRepository.findByTel(id).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_TEL));
+                return userRepository.findByTel(id)
+                    .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_TEL));
             case EMAIL:
-                return userRepository.findByEmail(id).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_EMAIL));
+                return userRepository.findByEmail(id)
+                    .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_EMAIL));
             default:
-                return userRepository.findById(Long.parseLong(id)).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_ID));
+                return userRepository.findById(Long.parseLong(id))
+                    .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_ID));
         }
     }
 
     @Override
-    public void modifyPasswordById(String id, String password, String newPassword) {
-        Long userId = Long.parseLong(id);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("not found user"));
+    public void modifyPasswordById(ResetPassword resetPassword) {
+        User user = find(resetPassword.getSignId());
         String storedPassword = user.getPassword();
-        if (passwordEncoder.matches(password, storedPassword)) {
-            userRepository.modifyPassword(userId ,storedPassword, passwordEncoder.encode(newPassword));
+        if (passwordEncoder.matches(resetPassword.getPassword(), storedPassword)) {
+            userRepository.modifyPassword(user.getId(), storedPassword,
+                passwordEncoder.encode(resetPassword.getNewPassword()));
         }
     }
 }

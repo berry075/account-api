@@ -6,5 +6,5 @@ public interface UserService {
 
     User find(String id);
 
-    void modifyPasswordById(String id, String password, String newPassword);
+    void modifyPasswordById(ResetPassword resetPassword);
 }
