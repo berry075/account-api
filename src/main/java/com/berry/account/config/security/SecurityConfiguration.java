@@ -26,6 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
+            .antMatchers("/user/signup", "/user/login", "/exception/**","/item/**", "/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
             .anyRequest().permitAll() // TODO: delete
 //                    .antMatchers("/auth", "/sign-in").permitAll()
 //                    .antMatchers("/users").hasAuthority("EDIT_PROFILE")

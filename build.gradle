@@ -20,10 +20,15 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'junit:junit:4.13.1'
+	implementation 'junit:junit'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	/* swagger */
+	//implementation 'io.springfox:springfox-swagger2:3.0.0'
+	//implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
 	/* security */
 	implementation 'org.springframework.boot:spring-boot-starter-security'
