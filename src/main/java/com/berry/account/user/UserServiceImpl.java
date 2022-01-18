@@ -1,5 +1,7 @@
 package com.berry.account.user;
 
+import com.berry.account.exception.ErrorCode;
+import com.berry.account.exception.ErrorCodeException;
 import com.berry.account.util.SignIdValidator;
 import com.berry.account.util.SignIdValidator.SignIdType;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +27,11 @@ public class UserServiceImpl implements UserService {
         SignIdType signIdType = SignIdValidator.getType(id);
         switch (signIdType) {
             case TEL:
-                return userRepository.findByTel(id).orElseThrow();
+                return userRepository.findByTel(id).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_TEL));
             case EMAIL:
-                return userRepository.findByEmail(id).orElseThrow();
+                return userRepository.findByEmail(id).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_EMAIL));
             default:
-                return userRepository.findById(Long.parseLong(id)).orElseThrow();
+                return userRepository.findById(Long.parseLong(id)).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_ID));
         }
     }
 

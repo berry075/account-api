@@ -1,5 +1,7 @@
 package com.berry.account.sign;
 
+import com.berry.account.exception.ErrorCode;
+import com.berry.account.exception.ErrorCodeException;
 import com.berry.account.user.User;
 import com.berry.account.user.UserRepository;
 import com.berry.account.util.SignIdValidator;
@@ -22,17 +24,17 @@ public class SignInOutServiceImpl implements SignInOutService {
         User user = null;
         switch (signIdType) {
             case TEL:
-                user = userRepository.findByTel(signId).get();
+                user = userRepository.findByTel(signId).orElseThrow(() -> new ErrorCodeException(
+                    ErrorCode.USER_NOT_FOUND_BY_TEL));
                 break;
             case EMAIL:
-                user = userRepository.findByEmail(signId).get();
+                user = userRepository.findByEmail(signId).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_EMAIL));
                 break;
             default:
         }
 
-        /* TODO: 비밀번호 비교하기 */
-        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("not found user");
+        if ( !passwordEncoder.matches(password, user.getPassword())) {
+            throw new ErrorCodeException(ErrorCode.USER_INVALID_PASSWORD);
         }
 
         return user;
