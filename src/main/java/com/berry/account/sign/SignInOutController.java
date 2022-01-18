@@ -16,10 +16,13 @@ public class SignInOutController {
     private final SignInOutService signInOutService;
 
     @PostMapping("/sign-in")
-    public boolean signIn(@RequestBody Map<String, String> params) {
-        String signId = params.get("signId");
-        String password = params.get("password");
-        User user = signInOutService.signInBySignId(signId, password);
+    public boolean signIn(@RequestBody SignInUser signInUser) {
+        User user = signInOutService.signInBySignId(signInUser);
+        return true;
+    }
+
+    @PostMapping("/sign-out")
+    public boolean signOut(@RequestBody SignInUser signInUser) {
         return true;
     }
 }

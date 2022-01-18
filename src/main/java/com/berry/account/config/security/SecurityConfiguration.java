@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,11 +28,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/user/signup", "/user/login", "/exception/**","/item/**", "/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
-            .anyRequest().permitAll() // TODO: delete
-//                    .antMatchers("/auth", "/sign-in").permitAll()
-//                    .antMatchers("/users").hasAuthority("EDIT_PROFILE")
-//                    //.antMatchers("/users/**").hasRole("USER")
-//                    .anyRequest().hasRole("USER")
+//            .anyRequest().permitAll() // TODO: delete
+                    .antMatchers("/auth", "/sign-in").permitAll()
+                    .antMatchers(HttpMethod.POST, "/users").hasAuthority("EDIT_PROFILE")
+                    .antMatchers(HttpMethod.PATCH, "/users/**/password_reset").hasAuthority("EDIT_PROFILE")
+                   //.antMatchers("/users/**").hasRole("USER")
+                    .anyRequest().hasRole("USER")
+//                    .antMatchers("/users/**").hasRole("USER")
+//                    .anyRequest().permitAll()
+            .and()
+                .logout()
+                .logoutUrl("/sign-out")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(authenticationEntryPoint())

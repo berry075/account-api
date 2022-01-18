@@ -18,7 +18,8 @@ public class SignInOutServiceImpl implements SignInOutService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User signInBySignId(String signId, String password) {
+    public User signInBySignId(SignInUser signInUser) {
+        String signId = signInUser.getSignId();
         SignIdType signIdType = SignIdValidator.getType(signId);
 
         User user = null;
@@ -28,15 +29,21 @@ public class SignInOutServiceImpl implements SignInOutService {
                     ErrorCode.USER_NOT_FOUND_BY_TEL));
                 break;
             case EMAIL:
-                user = userRepository.findByEmail(signId).orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_EMAIL));
+                user = userRepository.findByEmail(signId)
+                    .orElseThrow(() -> new ErrorCodeException(ErrorCode.USER_NOT_FOUND_BY_EMAIL));
                 break;
             default:
         }
 
-        if ( !passwordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(signInUser.getPassword(), user.getPassword())) {
             throw new ErrorCodeException(ErrorCode.USER_INVALID_PASSWORD);
         }
 
         return user;
+    }
+
+    @Override
+    public User signOutBySignId(SignInUser signInUser) {
+        return null;
     }
 }
